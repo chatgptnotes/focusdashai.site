@@ -1,0 +1,11 @@
+account_name,metric_type,period_start,period_end,value,unit,source
+City General Hospital,staff_adoption_percent,2024-10-01,2024-10-31,85,percent,training_system
+City General Hospital,patient_experience_score,2024-10-01,2024-10-31,82,score,patient_feedback
+City General Hospital,patient_wait_time_minutes,2024-10-01,2024-10-31,18,minutes,scheduling_system
+City General Hospital,no_show_rate_percent,2024-10-01,2024-10-31,8,percent,scheduling_system
+City General Hospital,complaint_rate_per_1000,2024-10-01,2024-10-31,3.5,rate,complaint_tracking
+HealthCare Partners,staff_adoption_percent,2024-10-01,2024-10-31,72,percent,training_system
+HealthCare Partners,patient_experience_score,2024-10-01,2024-10-31,75,score,patient_feedback
+HealthCare Partners,patient_wait_time_minutes,2024-10-01,2024-10-31,25,minutes,scheduling_system
+HealthCare Partners,no_show_rate_percent,2024-10-01,2024-10-31,12,percent,scheduling_system
+HealthCare Partners,complaint_rate_per_1000,2024-10-01,2024-10-31,5.2,rate,complaint_tracking

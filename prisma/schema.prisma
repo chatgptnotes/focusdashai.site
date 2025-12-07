@@ -1,0 +1,176 @@
+// Focus Dash Database Schema
+// Multi-tenant Customer Success Command Centre
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Tenants - Organizations using Focus Dash
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  status    String   @default("active") // active, suspended, archived
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users          User[]
+  accounts       Account[]
+  metrics        Metric[]
+  pulseScores    PulseScore[]
+  pulseWeights   PulseWeight[]
+
+  @@map("tenants")
+}
+
+// Users - Admin, Manager, CSM roles
+model User {
+  id           String   @id @default(cuid())
+  tenantId     String
+  name         String
+  email        String   @unique
+  role         String   // admin, manager, csm
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  accounts Account[] @relation("AccountOwner")
+
+  @@index([tenantId])
+  @@index([email])
+  @@map("users")
+}
+
+// Accounts - Customer accounts across verticals
+model Account {
+  id           String   @id @default(cuid())
+  tenantId     String
+  name         String
+  vertical     String   // tech, healthcare, manufacturing
+  segment      String?  // enterprise, mid-market, smb
+  ownerUserId  String?
+  baseCurrency String   @default("USD")
+  mrr          Float    @default(0) // Monthly Recurring Revenue
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  owner       User?        @relation("AccountOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  metrics     Metric[]
+  pulseScores PulseScore[]
+  notes       AccountNote[]
+  actions     AccountAction[]
+
+  @@index([tenantId])
+  @@index([vertical])
+  @@index([ownerUserId])
+  @@map("accounts")
+}
+
+// Metrics - Raw metric values by account and period
+model Metric {
+  id          String   @id @default(cuid())
+  tenantId    String
+  accountId   String
+  metricType  String   // nrr_percent, active_users_percent, nps_score, etc.
+  periodStart DateTime
+  periodEnd   DateTime
+  value       Float
+  unit        String?  // percent, count, hours, minutes, etc.
+  source      String?  // csv_upload, api, integration_name
+  createdAt   DateTime @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, accountId, metricType])
+  @@index([periodStart])
+  @@map("metrics")
+}
+
+// PulseScore - Calculated Focus Pulse Scores per account per period
+model PulseScore {
+  id             String   @id @default(cuid())
+  tenantId       String
+  accountId      String
+  periodStart    DateTime
+  periodEnd      DateTime
+  score          Float    // 0 to 100
+  status         String   // green, amber, red
+  componentsJson String   @db.Text // JSON: {usage: 85, experience: 70, outcomes: 80, risk: 10}
+  createdAt      DateTime @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, accountId, periodStart])
+  @@index([tenantId])
+  @@index([accountId])
+  @@index([periodStart])
+  @@map("pulse_scores")
+}
+
+// PulseWeight - Configurable weights and thresholds per tenant and vertical
+model PulseWeight {
+  id               String   @id @default(cuid())
+  tenantId         String
+  vertical         String   // tech, healthcare, manufacturing, or 'default'
+  usageWeight      Float    @default(0.35)
+  experienceWeight Float    @default(0.25)
+  outcomeWeight    Float    @default(0.25)
+  riskWeight       Float    @default(0.15)
+  greenMin         Float    @default(70)  // Green status threshold
+  amberMin         Float    @default(50)  // Amber status threshold
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, vertical])
+  @@index([tenantId])
+  @@map("pulse_weights")
+}
+
+// AccountNote - Notes and comments for accounts
+model AccountNote {
+  id        String   @id @default(cuid())
+  accountId String
+  userId    String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([createdAt])
+  @@map("account_notes")
+}
+
+// AccountAction - Tracked actions and tasks for accounts
+model AccountAction {
+  id          String   @id @default(cuid())
+  accountId   String
+  userId      String
+  actionType  String   // call, meeting, email, task, follow_up, escalation
+  title       String
+  description String?  @db.Text
+  status      String   @default("pending") // pending, completed, cancelled
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("account_actions")
+}

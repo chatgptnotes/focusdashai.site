@@ -1,0 +1,16 @@
+account_name,metric_type,period_start,period_end,value,unit,source
+Acme Corporation,active_users_percent,2024-10-01,2024-10-31,85,percent,product_analytics
+Acme Corporation,hero_feature_adoption_percent,2024-10-01,2024-10-31,72,percent,product_analytics
+Acme Corporation,license_utilisation_percent,2024-10-01,2024-10-31,78,percent,license_system
+Acme Corporation,integration_count,2024-10-01,2024-10-31,8,count,integration_platform
+Acme Corporation,nps_score,2024-10-01,2024-10-31,45,score,survey_tool
+Acme Corporation,csat_score,2024-10-01,2024-10-31,88,score,survey_tool
+Acme Corporation,nrr_percent,2024-10-01,2024-10-31,115,percent,finance_system
+Acme Corporation,expansion_mrr,2024-10-01,2024-10-31,5000,currency,finance_system
+TechStart Inc,active_users_percent,2024-10-01,2024-10-31,65,percent,product_analytics
+TechStart Inc,hero_feature_adoption_percent,2024-10-01,2024-10-31,45,percent,product_analytics
+TechStart Inc,license_utilisation_percent,2024-10-01,2024-10-31,60,percent,license_system
+TechStart Inc,integration_count,2024-10-01,2024-10-31,3,count,integration_platform
+TechStart Inc,nps_score,2024-10-01,2024-10-31,20,score,survey_tool
+TechStart Inc,csat_score,2024-10-01,2024-10-31,70,score,survey_tool
+TechStart Inc,nrr_percent,2024-10-01,2024-10-31,95,percent,finance_system
