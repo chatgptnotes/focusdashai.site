@@ -6,6 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number, currency: string = 'USD'): string {
+  if (amount === null || amount === undefined) return '$0'
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,
@@ -15,6 +16,7 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
 }
 
 export function formatPercent(value: number, decimals: number = 0): string {
+  if (value === null || value === undefined) return '0%'
   return `${value.toFixed(decimals)}%`
 }
 
