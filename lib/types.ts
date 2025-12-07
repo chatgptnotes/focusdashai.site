@@ -31,6 +31,8 @@ export interface AccountWithScore {
 export interface PortfolioMetrics {
   totalAccounts: number
   totalMRR: number
+  avgPulseScore: number
+  atRiskAccounts: number
   nrr: number
   churnRate: number
   scoreDistribution: {
