@@ -16,6 +16,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Tenant ID is required' }, { status: 400 })
     }
 
+    // DEMO MODE: Return mock pulse weights for demo tenant
+    if (tenantId === 'demo-tenant-1') {
+      return NextResponse.json({
+        weights: [
+          { id: '1', tenantId: 'demo-tenant-1', vertical: 'default', usageWeight: 0.35, experienceWeight: 0.25, outcomeWeight: 0.25, riskWeight: 0.15, greenMin: 70, amberMin: 50, createdAt: new Date(), updatedAt: new Date() },
+          { id: '2', tenantId: 'demo-tenant-1', vertical: 'tech', usageWeight: 0.4, experienceWeight: 0.25, outcomeWeight: 0.25, riskWeight: 0.1, greenMin: 75, amberMin: 55, createdAt: new Date(), updatedAt: new Date() },
+          { id: '3', tenantId: 'demo-tenant-1', vertical: 'healthcare', usageWeight: 0.3, experienceWeight: 0.35, outcomeWeight: 0.2, riskWeight: 0.15, greenMin: 70, amberMin: 50, createdAt: new Date(), updatedAt: new Date() },
+          { id: '4', tenantId: 'demo-tenant-1', vertical: 'manufacturing', usageWeight: 0.35, experienceWeight: 0.2, outcomeWeight: 0.3, riskWeight: 0.15, greenMin: 68, amberMin: 48, createdAt: new Date(), updatedAt: new Date() },
+        ],
+      })
+    }
+
     const weights = await prisma.pulseWeight.findMany({
       where: { tenantId },
       orderBy: { vertical: 'asc' },

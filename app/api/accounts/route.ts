@@ -20,6 +20,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Tenant ID required' }, { status: 400 })
     }
 
+    // DEMO MODE: Return mock accounts for demo tenant
+    if (tenantId === 'demo-tenant-1') {
+      return NextResponse.json({
+        accounts: [
+          { id: '1', name: 'TechCorp Inc', vertical: 'tech', segment: 'enterprise', mrr: 15000, baseCurrency: 'USD', owner: { name: 'Sarah Johnson', email: 'sarah@demo.com' }, latestScore: { score: 35, status: 'red', periodStart: new Date(), components: { usage: 30, experience: 40, outcomes: 35, risk: 30 } } },
+          { id: '2', name: 'HealthPlus Medical', vertical: 'healthcare', segment: 'mid-market', mrr: 8000, baseCurrency: 'USD', owner: { name: 'Mike Chen', email: 'mike@demo.com' }, latestScore: { score: 42, status: 'red', periodStart: new Date(), components: { usage: 45, experience: 40, outcomes: 42, risk: 40 } } },
+          { id: '3', name: 'Manufacturing Co', vertical: 'manufacturing', segment: 'enterprise', mrr: 12000, baseCurrency: 'USD', owner: { name: 'Lisa Wong', email: 'lisa@demo.com' }, latestScore: { score: 48, status: 'amber', periodStart: new Date(), components: { usage: 50, experience: 48, outcomes: 50, risk: 45 } } },
+          { id: '4', name: 'Innovation Labs', vertical: 'tech', segment: 'enterprise', mrr: 25000, baseCurrency: 'USD', owner: { name: 'John Smith', email: 'john@demo.com' }, latestScore: { score: 95, status: 'green', periodStart: new Date(), components: { usage: 95, experience: 92, outcomes: 98, risk: 95 } } },
+          { id: '5', name: 'Enterprise Solutions', vertical: 'tech', segment: 'enterprise', mrr: 20000, baseCurrency: 'USD', owner: { name: 'Emily Davis', email: 'emily@demo.com' }, latestScore: { score: 88, status: 'green', periodStart: new Date(), components: { usage: 90, experience: 85, outcomes: 88, risk: 90 } } },
+        ],
+      })
+    }
+
     // Build where clause
     const where: any = { tenantId }
     if (vertical && vertical !== 'all') where.vertical = vertical
