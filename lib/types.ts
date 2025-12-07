@@ -18,6 +18,7 @@ export interface AccountWithScore {
   vertical: Vertical
   segment: AccountSegment | null
   mrr: number
+  baseCurrency: string
   owner: {
     name: string
   } | null
