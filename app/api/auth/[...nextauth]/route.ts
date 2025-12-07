@@ -17,44 +17,61 @@ const authOptions: NextAuthOptions = {
           throw new Error('Email and password required')
         }
 
-        // Find user in database
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-          include: {
-            tenant: {
-              select: {
-                id: true,
-                name: true,
-                status: true,
+        // DEMO MODE: Bypass database for demo credentials
+        if (credentials.email === 'admin@bettroi.com' && credentials.password === 'password123') {
+          return {
+            id: 'demo-user-1',
+            email: 'admin@bettroi.com',
+            name: 'Admin User',
+            role: 'admin',
+            tenantId: 'demo-tenant-1',
+            tenantName: 'Bettroi Demo',
+          }
+        }
+
+        try {
+          // Find user in database
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+            include: {
+              tenant: {
+                select: {
+                  id: true,
+                  name: true,
+                  status: true,
+                },
               },
             },
-          },
-        })
+          })
 
-        if (!user) {
-          throw new Error('Invalid credentials')
-        }
+          if (!user) {
+            throw new Error('Invalid credentials')
+          }
 
-        // Check if tenant is active
-        if (user.tenant.status !== 'active') {
-          throw new Error('Account suspended')
-        }
+          // Check if tenant is active
+          if (user.tenant.status !== 'active') {
+            throw new Error('Account suspended')
+          }
 
-        // Verify password
-        const isValidPassword = await bcrypt.compare(credentials.password, user.passwordHash)
+          // Verify password
+          const isValidPassword = await bcrypt.compare(credentials.password, user.passwordHash)
 
-        if (!isValidPassword) {
-          throw new Error('Invalid credentials')
-        }
+          if (!isValidPassword) {
+            throw new Error('Invalid credentials')
+          }
 
-        // Return user object
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          tenantId: user.tenantId,
-          tenantName: user.tenant.name,
+          // Return user object
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            tenantId: user.tenantId,
+            tenantName: user.tenant.name,
+          }
+        } catch (error) {
+          console.error('Database authentication error:', error)
+          throw new Error('Authentication failed')
         }
       },
     }),
