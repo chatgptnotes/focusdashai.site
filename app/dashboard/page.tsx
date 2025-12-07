@@ -139,7 +139,7 @@ export default function PortfolioDashboardDynamic() {
                       <p className="text-xs text-gray-500">{account.vertical} • {account.owner?.name || 'Unassigned'}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-pulse-red">{account.score.toFixed(1)}</p>
+                      <p className="text-sm font-semibold text-pulse-red">{account.latestScore?.score.toFixed(1) || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{formatCurrency(account.mrr)}</p>
                     </div>
                   </div>
@@ -166,7 +166,7 @@ export default function PortfolioDashboardDynamic() {
                       <p className="text-xs text-gray-500">{account.vertical} • {account.owner?.name || 'Unassigned'}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-pulse-green">{account.score.toFixed(1)}</p>
+                      <p className="text-sm font-semibold text-pulse-green">{account.latestScore?.score.toFixed(1) || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{formatCurrency(account.mrr)}</p>
                     </div>
                   </div>
