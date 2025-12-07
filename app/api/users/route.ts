@@ -17,6 +17,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Tenant ID required' }, { status: 400 })
     }
 
+    // DEMO MODE: Return mock users for demo tenant
+    if (tenantId === 'demo-tenant-1') {
+      return NextResponse.json({
+        users: [
+          { id: 'demo-user-1', name: 'Admin User', email: 'admin@bettroi.com', role: 'admin', createdAt: new Date(), updatedAt: new Date(), _count: { accounts: 0 } },
+        ],
+      })
+    }
+
     const users = await prisma.user.findMany({
       where: { tenantId },
       select: {

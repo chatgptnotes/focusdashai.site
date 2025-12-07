@@ -16,6 +16,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Tenant ID required' }, { status: 400 })
     }
 
+    // DEMO MODE: Return mock data for demo tenant
+    if (tenantId === 'demo-tenant-1') {
+      return NextResponse.json({
+        totalAccounts: 15,
+        totalMRR: 125000,
+        avgPulseScore: 72.5,
+        atRiskAccounts: 3,
+        nrr: 105,
+        churnRate: 5,
+        scoreDistribution: {
+          green: 8,
+          amber: 4,
+          red: 3,
+        },
+        topRisk: [
+          { id: '1', name: 'TechCorp Inc', vertical: 'tech', segment: 'enterprise', mrr: 15000, baseCurrency: 'USD', owner: { name: 'Sarah Johnson' }, latestScore: { score: 35, status: 'red', periodStart: new Date() } },
+          { id: '2', name: 'HealthPlus Medical', vertical: 'healthcare', segment: 'mid-market', mrr: 8000, baseCurrency: 'USD', owner: { name: 'Mike Chen' }, latestScore: { score: 42, status: 'red', periodStart: new Date() } },
+          { id: '3', name: 'Manufacturing Co', vertical: 'manufacturing', segment: 'enterprise', mrr: 12000, baseCurrency: 'USD', owner: { name: 'Lisa Wong' }, latestScore: { score: 48, status: 'amber', periodStart: new Date() } },
+        ],
+        topUpside: [
+          { id: '4', name: 'Innovation Labs', vertical: 'tech', segment: 'enterprise', mrr: 25000, baseCurrency: 'USD', owner: { name: 'John Smith' }, latestScore: { score: 95, status: 'green', periodStart: new Date() } },
+          { id: '5', name: 'Enterprise Solutions', vertical: 'tech', segment: 'enterprise', mrr: 20000, baseCurrency: 'USD', owner: { name: 'Emily Davis' }, latestScore: { score: 88, status: 'green', periodStart: new Date() } },
+          { id: '6', name: 'Global Systems', vertical: 'tech', segment: 'enterprise', mrr: 18000, baseCurrency: 'USD', owner: { name: 'David Brown' }, latestScore: { score: 92, status: 'green', periodStart: new Date() } },
+        ],
+      })
+    }
+
     // Get all accounts with latest pulse scores
     const accounts = await prisma.account.findMany({
       where: { tenantId },
